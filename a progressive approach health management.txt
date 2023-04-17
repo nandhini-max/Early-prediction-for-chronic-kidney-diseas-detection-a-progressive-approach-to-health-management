@@ -1,0 +1,325 @@
+import pandas as pd
+import numpy as np
+from collections import counter as c
+import matplotlib.pyplotas plt
+import seaborn as sns
+import missingno as msno
+from sklearn.metrics import accuracy_score,confusion_matrix
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
+from sklearn.linear_model import LogisticRegression
+import pickle
+
+
+data=pd.read_csv("chronickidneydisease.csv")
+data.head()
+
+
+data.columns
+
+data.columns=['age','blood_pressure','specfic_gravity','albumin',
+                          'sugar','red_blood_cells','pus_cell','pus_cell_clumps','bacteria',
+                          'blood glucose random','blood_urea','serum_creatinine','sodium','potassium',
+                          'hemoglobin','packed_cell_volume','white_blood_cell_count','red_blood_cell_count',
+                          'hypertension','diabetesmellitus','coronary_artery_disease','appetite',
+                          'pedal_edema','anemia','class']
+
+
+data.info()
+
+data.isnull().any()
+
+data['blood glucose random'].fillna(data['blood glucose random'].mean(),inplace=True)
+data['blood_pressure'].fillna(data['blood_pressure'].mean(),inplace=True)
+data['blood_urea'].fillna(data['blood_urea'].mean(),inplace=True)
+data['hemoglobin'].fillna(data['hemoglobin'].mean(),inplace=True)
+data['packed_cell_volume'].fillna(data['packed_cell_volume'].mean(),inplace=True)
+data['potassium'].fillna(data['potassium'].mean(),inplace=True)
+data['red_blood_cell_count'].fillna(data['red_blood_cell_count'].mean(),inplace=True)
+data['serum_creatinine'].fillna(data['serum_creatinine'].mean(),inplace=True)
+data['sodium'].fillna(data['sodium'].mean(),inplace=True)
+data['white_blood_cell_count'].fillna(data['white_blood_cell_count'].mean(),inplace=True)
+
+data['age'].fillna(data['age'].mode()[0],inplace=True)
+data['hypertension'].fillna(data['hypertension'].mode()[0],inplace=True)
+data['pus_cell_clumps'].fillna(data['pus_cell_clumps'].mode()[0],inplace=True)
+data['appetite'].fillna(data['appetite'].mode()[0],inplace=True)
+data['albumin'].fillna(data['albumin'].mode()[0],inplace=True)
+data['pus_cell'].fillna(data['pus_cell'].mode()[0],inplace=True)
+data['red_blood_cells'].fillna(data['red_blood_cells'].mode()[0],inplace=True)
+data['coronary_artery_disease'].fillna(data['coronary_artery_disease'].mode()[0],inplace=True)
+data['bacteria'].fillna(data['bacteria'].mode()[0],inplace=True)
+data['anemia'].fillna(data['anemia'].mode()[0],inplace=True)
+data['diabetesmellitus'].fillna(data['diabetesmellitus'].mode()[0],inplace=True)
+data['pedal_edema'].fillna(data['pedal_edema'].mode()[0],inplace=True)
+data['specific_gravity'].fillna(data['specific_gravity'].mode()[0],inplace=true)
+
+
+catcols=set(data.dtypes[data.dtypes=='0'].index.values)
+print(catcols)
+
+
+for i in catcols:
+      print("columns  :",i)
+      print(c(data[i]))
+      print('*'*120+'\n')
+
+catcols.remove('red_blood_cell_count')
+catcols.remove('packed_cell_volume')
+catcols.remove('white_blood_cell_count')
+print(catcols)
+
+
+catcols=['anemia','pedal_edema','appetite','bacteria','class','coronary_artery_disease','diabetesmellitus','hypertension','pus_cell','pus_cell_clumps','red_blood_cells']
+
+from sklearn.preprocessing import LabelEncoder
+for i in catcols
+      print(LABEL ENCODING OF:",i)
+      LEi = LabelEncoder()
+      print(c(data[i]))
+      data[i] = LEi.fit_transform(data[i])
+      print(c(data[i]))
+     print("*"*100)
+
+
+contcols=set(data.dtypes[data.dtypes!='0'].index.values)
+print(contcols)
+
+for i in contcols:
+      print("Continous Columns :",i)
+      print(c(data[i]))
+      print('*'*120+'\n')
+
+
+contcols.remove('specific_gravity')
+contcols.remove('albumin')
+contcols.remove('sugar')
+print(contcols)
+
+
+contcols.add('red_blood_cell_count')
+contcols.add('packed_cell_volume')
+contcols.add('white_blood_cell_count')
+print(contcols0
+
+
+catcols.add('specific_gravity')
+catcols.add('albumin')
+catcols.add('sugar')
+print(catcols)
+
+
+data['coronary_artery_disease'] = data.coronary_artery_disease.replace('\tno','no')
+c(data['coronary_artery_disease'])
+
+
+data['diabetesmellitus']=data.diabetesmellitus.replace(to_replace={'\tno':'no','\tyes','yes','yes':'}
+c(data['diabetesmellitus'])
+
+data.describe()
+
+import matplotlib.pyplot as plt
+fig=plt.figure(figsize=(5,5))
+plt.scatter(data['age'],data['blood_pressure'],color='blue')
+plt.xlabel('age')
+plt.ylabel('blood_pressure')
+plt.title("age VS blood scatter plot") 
+
+
+ plt.figure(figsize=(20,15), facecolor='white')
+plotnumber =1
+ 
+for column in contcols:
+       if plotnumber<=11:
+           ax = plt.subplot(3,4,plotnumber)
+           plt.scatter(data['age'],data[column])
+          plt.xlabel(column,fontsize=20)
+     plotnumber+=1
+plt.show()
+
+f,ax=plt.subplots(figsize=18,10))
+sns.heatmap(data.corr(),annot=True,fmt=".2f",ax=ax,linewidths=0.5,linecolor="orange")
+plt.xticks(rotation=45)
+plt.yticks(rotation=45)
+plt.show()
+
+sns.countplot(data['class'])
+
+selcols=['red_blood_cells','pus_cell','blood glucose random','blood_urea','pedel_edema','anemia','diabetesmellitus','coronart_artery_disease']
+x=pd.DataFrame(data,columns=selcols)
+y=pd.DataFrame(data,columns=['class'])
+print(x.shape)
+print(y.shape)
+
+
+from sklearn.model_selection import train_test_split
+x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.2,random_state=2)
+
+
+import tensorflow
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
+
+classification=sequential()
+classification.add(Dense(30,activation='relu'))
+classification.add(Dense(128,activation='relu'))
+classification.add(Dense(64,activation='relu'))
+classification.add(Dense(32,activation='relu'))
+classification.add(Dense(1,activation='sigmoid'))
+
+classification.fit(x_train,y_train,batch_size=10,validation_split=0.2,epochs=100)
+
+y_pred =1gr.predict([[1,1,121.000000,36.0,0,0,1,0]])
+print(y_pred)
+
+
+y_pred =dtc.predict([[1,1,121.000000,36.0,0,0,1,0]])
+print(y_pred)
+(y_pred)
+
+y_pred =rfc.predict([[1,1,121.000000,36.0,0,0,1,0]])
+print(y_pred)
+(y_pred)
+
+
+classifications.save("ckd.h5")
+
+y_pred = classification.predict(x_test)
+y_pred
+
+y_pred = (y_pred>0.5)
+y_pred
+
+def predict_exit(sample_volume):
+sample_value =np.array(sample_value)
+sample_value=sample_value.reshape(1,-1)
+sample_value=sc.transform(sample_value)
+return classifier.predict(sample_value)
+
+test=classification.predict([[1,1,121.000000,36.0,0,0,1,0]])
+if test==1:
+     print('prediction:High chance of CKD!')
+else:
+     print('prediction:Low chance of CKD.')
+
+
+        dfs = []
+models = [
+                  ('LogReg',LogisticRegression()),
+                  ('RF',RandomForestClassifier()),
+                  ('DecisionTree',DecisionTreeClassifier()),
+                 ]
+results = []
+        name = []
+        scoring = ['accuracy',precision_weighted','recall_weighted','f1_weighted','roc_auc']
+        target_names=['no ckd', 'ckd']
+        for name, model in models:
+               kfold = model_selection.kfold(n_splits=5,shuffle=True,random_state=90210)
+               cv_results=model_selection.cross_validate(model,x_train,y_train,cv=kfold,scoring=scoring)
+              clf=model.fit(x_train,y_train)
+              y_pred=clf.predict(x_test)
+              print(name)
+              print(classification_report(y_test,y_pred,target_name=target_names))
+              results.append (cv_results)
+              name.append (name)
+              this_df=pd.DataFrame(cv_results)
+              this_df['model']=name
+              dfs.append(this_df)
+final=pd.contact(dfs,ignore_index=True)
+return final
+
+
+from sklearn.metrics import confusion_matrix
+cm=confusion_matrix(y_test,y_predict)
+cm
+
+plt.figure(figsize=(8,6))
+sns.heatmap(cm,cmap='blues',annot=true,xticklabels=['no ckd','ckd'],yticklabels=['no ckd',]ckd'])
+plt.xlabel('predicted values')
+plt.ylabel('Actual values')
+plt.title('confusionmatrix for Logistic Regression model')
+plt.show()
+
+
+from sklearn.metrics import confusion_matrix
+cm=confusion_matrix(y_test,y_predict)
+cm
+ 
+
+plt.figure(figsize=(8,6))
+sns.heatmap(cm,cmap='Blues',annot=true,xticklabels=['no ckd','ckd'],yticklabels=['no ckd','ckd'])
+plt.xlabel('predicted values')
+plt.ylabel('actual values')
+plt.title('confusionmatrix for RandomForestClassifier')
+plt.show()
+
+
+from sklearn.metrics import confusion_matrix
+cm=confusion_matrix(y_test,y_predict)
+cm
+
+
+plt.figure(figsize=(8,6))
+sns.heatmap(cm,cmap='Blues',annot=True,xticklabels=['no ckd','ckd'],yticklabels=['no ckd','ckd'])
+plt.xlabel('predicted values')
+plt.ylabel('Actual values')
+plt.title('confusion matrix for DecisionTreeClassifier')
+plt.show()
+
+from sklearn.metrics import cinfusion_matrix
+cm=confusion_matrix(y_test,y_pred0
+cm
+
+plt.figure(figsize=(8,6))
+sns.heatmap(cm,cmap='Blues',annot=True,xticklabels=['no ckd','ckd'],yticklabels=['no ckd',ckd']
+plt.xlabel('predicted values')
+plt.ylabel(Actual values')
+plt.title('confusion matrix for ANN model')
+plt.show()
+
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+plt.figure(figsize=(20,12))
+sns.set(font_scale=2.5)
+g = sns.boxplot(x="model",y="values",hue="metrics",data=results_long_nofit,palette="set3")
+plt.legend(bbox_to_anchor=(1.05,1),loc=2,borderaxespad=0.)
+plt.tittle('comparision of model by classification metric')
+plt.savefig('./benchmark_model_performance.png',dpi=300)
+
+
+pickle.dump(lgr,open('CKD.pk1','wb'))
+
+from flask import Flask,render_template,request
+import numpy as np
+import pickle
+
+app=Flask(_name_)
+model = pickle.load(open('CKD.pk1','rb'))
+
+	
+@app .route('/')
+def home();
+        return render_template('home.html')
+
+@app.route('/prediction',methods=['POST','GET'])
+def prediction():
+   return render_template('indexnew.html')
+@app.route('/Home',methods=['POST','GET'])
+def my_home():
+   return render-template('home.html')
+@app.route('/predict',methods=['POST'])
+def predict():
+      
+                 input_features = [float(x)for x in request.form.value()]
+                 features_value = [np.array(input_features)]
+
+                 features_name=['blood_urea','blood glucose random','anemia','coronary_artery_disease','pus_cell','red_blood_cells','diabetesmellitus','pedal_edema']
+                 df = pd.DataFrame(features_value ,columns=features_name)
+               
+                 output=model.predict(df)
+
+return render_template('result.html',prediction_text=output)
+
+if__name__=='__main__':
+app.run(debug=true)
